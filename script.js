@@ -19,9 +19,17 @@ function getElement(identifier) {
 }
 
 function displayProducts(products) {
-  const productList = products
-    .map((product) => {
+
+    if (!products || products.length === 0) {
+
+        productContainer.innerHTML = "<h2 class='no-results'>No results</h2>"
+
+    } else { 
+
+    const productList = products.map((product) => {
+
       const { title, price, brand, rating, thumbnail } = product;
+
       return `
     <div class='product-wrapper'>
       <div class='rating'>
@@ -43,11 +51,32 @@ function displayProducts(products) {
     .join("");
 
   productContainer.innerHTML = productList;
+
+  }
+
 }
 
 function createBtn(category) {}
 
-function filterProducts(value) {}
+searchInput.addEventListener('input', (e) => {
+
+    filterProducts(e.target.value);
+    
+});
+
+
+
+function filterProducts(value) {
+
+    const filteredProducts = data.products.filter((product) => {
+        
+    return product.category.includes(value);
+
+    })
+
+    displayProducts(filteredProducts);
+
+}
 
 function displayCategories(products) {}
 
@@ -55,6 +84,7 @@ function parseCategories(products) {}
 
 function init() {
   displayProducts(data.products);
+  
 }
 
 init();
