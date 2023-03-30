@@ -10,6 +10,16 @@ searchInput.addEventListener("input", (e) => {
 
 });
 
+document.addEventListener('click', (e) => {
+
+    if (e.target.classList.contains('category-btn')) {
+
+        filterProducts(e.target.textContent.toLowerCase());
+
+    }
+
+});
+
 function getElement(identifier) {
 
   const el = document.querySelector(identifier);
@@ -80,13 +90,29 @@ function createBtn(category) {
 
 function filterProducts(value) {
 
-  const filteredProducts = data.products.filter((product) => {
+    if (value === 'all') {
 
-    return product.category.includes(value);
+        displayProducts(data.products);
+        
+        return;
 
-  });
+    }
 
-  displayProducts(filteredProducts);
+    const filteredProducts = data.products.filter((product) => {
+
+        if (value.split(" ").length > 1) {
+
+          return product.category.includes(value.split(" ").join("-"));
+
+        } else {
+
+          return product.category.includes(value);
+
+        }
+
+    });
+          
+    displayProducts(filteredProducts);
 
 }
 
@@ -135,7 +161,7 @@ function parseCategories(products) {
     }
 
     return category.charAt(0).toUpperCase() + category.substr(1);
-    
+
   });
 
   return categories;
