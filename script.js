@@ -4,33 +4,40 @@ const searchInput = getElement("#search");
 const btnContainer = getElement("#btn-container");
 const productContainer = getElement("#productslist-container");
 
-console.log(searchInput);
-console.log(btnContainer);
-console.log(productContainer);
+searchInput.addEventListener("input", (e) => {
+
+  filterProducts(e.target.value);
+
+});
 
 function getElement(identifier) {
+
   const el = document.querySelector(identifier);
 
   if (!el) {
+
     throw new Error("Could not find the element specified.");
+
   } else {
+
     return el;
+
   }
 }
 
 function displayProducts(products) {
 
-    if (!products || products.length === 0) {
+  if (!products || products.length === 0) {
 
-        productContainer.innerHTML = "<h2 class='no-results'>No results</h2>"
+    productContainer.innerHTML = "<h2 class='no-results'>No Results</h2>";
 
-    } else { 
+  } else {
 
     const productList = products.map((product) => {
 
-      const { title, price, brand, rating, thumbnail } = product;
+        const { title, price, brand, rating, thumbnail } = product;
 
-      return `
+        return `
     <div class='product-wrapper'>
       <div class='rating'>
         <p>Rating: ${rating}</p>
@@ -47,44 +54,96 @@ function displayProducts(products) {
       </div>
     </div>
   `;
-    })
-    .join("");
+      }).join("");
 
-  productContainer.innerHTML = productList;
+    productContainer.innerHTML = productList;
 
   }
 
 }
 
-function createBtn(category) {}
+function createBtn(category) {
 
-searchInput.addEventListener('input', (e) => {
+  const li = document.createElement("li");
 
-    filterProducts(e.target.value);
-    
-});
+  const btn = document.createElement("button");
 
+  btn.textContent = category;
 
+  btn.setAttribute("class", "category-btn");
 
-function filterProducts(value) {
+  li.appendChild(btn);
 
-    const filteredProducts = data.products.filter((product) => {
-        
-    return product.category.includes(value);
-
-    })
-
-    displayProducts(filteredProducts);
+  return li;
 
 }
 
-function displayCategories(products) {}
+function filterProducts(value) {
 
-function parseCategories(products) {}
+  const filteredProducts = data.products.filter((product) => {
+
+    return product.category.includes(value);
+
+  });
+
+  displayProducts(filteredProducts);
+
+}
+
+function displayCategories(products) {
+
+  const parsedCategories = parseCategories(products);
+
+  btnContainer.appendChild(createBtn("All"));
+
+  parsedCategories.forEach((category) => {
+
+    btnContainer.appendChild(createBtn(category));
+
+  });
+
+}
+
+function parseCategories(products) {
+
+  let categories = products.reduce((arr, product) => {
+
+    if (!arr.includes(product.category)) {
+
+      arr.push(product.category);
+
+    }
+
+    return arr;
+
+  }, []);
+
+  categories = categories.map((category) => {
+
+    if (category.includes("-")) {
+
+      const splitCategory = category
+        .split("-")
+        .map((str) => {
+
+          return str.charAt(0).toUpperCase() + str.substr(1);
+
+        }).join(" ");
+
+      return splitCategory;
+
+    }
+
+    return category.charAt(0).toUpperCase() + category.substr(1);
+    
+  });
+
+  return categories;
+}
 
 function init() {
   displayProducts(data.products);
-  
+  displayCategories(data.products);
 }
 
 init();
